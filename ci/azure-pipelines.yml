@@ -1,0 +1,60 @@
+# Equivalente en Azure DevOps del flujo de .github/workflows/ci.yml (clase 14).
+# Referencia: no se ejecuta en el curso.
+trigger:
+  branches: { include: [main] }
+  tags: { include: ["v*"] }
+pr:
+  branches: { include: [main] }
+
+pool: { vmImage: ubuntu-latest }
+
+variables:
+  - group: databricks-secrets   # DATABRICKS_HOST, DATABRICKS_TOKEN
+
+stages:
+  - stage: Test
+    jobs:
+      - job: test
+        steps:
+          - task: UsePythonVersion@0
+            inputs: { versionSpec: "3.11" }
+          - script: pip install -e ".[dev]" && ruff check . && pytest tests/unit
+
+  - stage: DeployDev
+    dependsOn: Test
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+    jobs:
+      - job: deploy
+        steps:
+          - script: curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+          - script: databricks bundle deploy -t dev
+            env: { DATABRICKS_HOST: $(DATABRICKS_HOST), DATABRICKS_TOKEN: $(DATABRICKS_TOKEN) }
+
+  - stage: DeployQA
+    dependsOn: Test
+    condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/v')
+    jobs:
+      - deployment: qa
+        environment: qa
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                - script: curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+                - script: databricks bundle deploy -t qa
+                  env: { DATABRICKS_HOST: $(DATABRICKS_HOST), DATABRICKS_TOKEN: $(DATABRICKS_TOKEN) }
+
+  - stage: DeployProd
+    dependsOn: DeployQA
+    jobs:
+      - deployment: prod
+        environment: prod   # con aprobación manual en Azure DevOps Environments
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                - script: curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+                - script: databricks bundle deploy -t prod
+                  env: { DATABRICKS_HOST: $(DATABRICKS_HOST), DATABRICKS_TOKEN: $(DATABRICKS_TOKEN) }

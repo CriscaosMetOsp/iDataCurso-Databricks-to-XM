@@ -1,0 +1,35 @@
+# Declarative Automation Bundle (Databricks Asset Bundle) del producto analítico "xm-demanda".
+# Un solo workspace (Free Edition): los ambientes se simulan con catálogos distintos.
+# En Azure Databricks cada target apuntaría a un workspace diferente; el resto no cambia.
+bundle:
+  name: xm-demanda
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog:
+    description: Catálogo de Unity Catalog para el ambiente
+    default: dev
+  horizon_days:
+    description: Horizonte de pronóstico en días
+    default: 7
+  notification_email:
+    description: Correo para alertas de jobs
+    default: ""
+
+targets:
+  dev:
+    mode: development
+    default: true
+    variables:
+      catalog: dev
+  qa:
+    mode: production
+    variables:
+      catalog: qa
+  prod:
+    mode: production
+    variables:
+      catalog: prod
+    # En Azure: workspace.host del workspace de producción y run_as con service principal.

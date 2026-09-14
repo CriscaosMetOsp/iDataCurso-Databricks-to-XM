@@ -1,0 +1,20 @@
+# Configuración común a todos los ambientes. Sin secretos.
+dominio: energia
+schemas:
+  bronze: bronze_energia
+  silver: silver_energia
+  gold: gold_energia
+  models: models
+tablas:
+  bronze_raw: demanda_raw
+  silver_diaria: demanda_diaria
+  dim_ciiu: dim_ciiu
+  gold_features: features_demanda_diaria
+  gold_pronostico: pronostico_demanda
+modelo:
+  nombre: demanda_7d
+  horizon_days: 7
+  lags: [1, 7, 14, 28]
+  ventanas: [7, 28]
+  alias_prod: champion
+llave_serie: [codigo_sic_agente, mercado_comercializacion, tipo_mercado, clasificacion_industrial]

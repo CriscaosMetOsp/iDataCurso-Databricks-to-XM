@@ -1,0 +1,35 @@
+[project]
+name = "xm_demanda"
+version = "0.1.0"
+description = "Solución de referencia: pronóstico de demanda de energía por segmento (curso Databricks - XM)"
+authors = [{ name = "Manuela Larrea Gómez" }]
+requires-python = ">=3.11"
+dependencies = [
+  "pandas>=2.2",
+  "pyyaml>=6.0",
+  "lightgbm>=4.3",
+  "scikit-learn>=1.5",
+  "mlflow>=3.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6", "pre-commit>=3.7", "openpyxl>=3.1", "databricks-sdk>=0.40"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+builtins = ["dbutils", "spark", "display"]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests/unit"]
