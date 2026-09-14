@@ -4,7 +4,7 @@
 
 Curso teórico-práctico de 15 clases (2 h cada una, 30 h) para el equipo de analítica de **XM**, operador del Sistema Interconectado Nacional y administrador del Mercado de Energía Mayorista de Colombia.
 
-**A quién va dirigido:** científicos de datos y analistas.
+**A quién va dirigido:** científicos de datos y analistas con posgrado en Data Science que empiezan a usar Databricks y necesitan evolucionar hacia un equipo multidisciplinar capaz de **construir, desplegar y operar** sus propios modelos (ML engineering + MLOps), no solo entrenarlos.
 
 **Qué se llevan al terminar:** un repositorio de referencia con una solución analítica de extremo a extremo (ingesta → gobierno → features → modelo → despliegue → operación) sobre un caso real del sector: **demanda y pérdidas de energía por operador de red, mercado, tipo de mercado y actividad económica (CIIU)**.
 
@@ -16,9 +16,11 @@ Curso teórico-práctico de 15 clases (2 h cada una, 30 h) para el equipo de ana
 |---|---|---|
 | Teoría | 40 min | Qué se puede hacer con Databricks en ese tema (**la plataforma completa**, no solo lo que permite Free Edition), con ejemplos del sector eléctrico |
 | Práctica | 70 min | Laboratorio guiado en **Databricks Free Edition** sobre el caso de XM. Cada lab tiene checklist y criterios de aceptación |
-| Cierre | 10 min | Revisión de la solución de referencia, "así sería en Azure/producción", retro |
+| Cierre | 10 min | Liberación del tag de la solución de referencia, "así sería en Azure/producción", qué viene en la próxima clase |
 
-Principio del curso: **la teoría cubre la plataforma completa; la práctica cubre lo que Free Edition permite.** Lo que Free Edition no permite (multi-workspace, Azure, GPU, Lakehouse Federation, etc.) se diseña, se diagrama y se documenta igual.
+Principio del curso: **la teoría cubre la plataforma completa; la práctica cubre lo que Free Edition permite.**
+
+**Trabajo autónomo, sin calificación.** Cada participante trabaja en su propio fork. Cada laboratorio termina con una celda `verificar()` que comprueba los criterios de aceptación y dice qué falta. Al cierre de cada clase se libera el tag `sXX` de la rama `solution`, y cada quien compara su versión con la de referencia (`git diff sXX`). El revisor del código es la integración continua (lint y tests), no una persona. La lista de autoevaluación por hito está en `docs/autoevaluacion.md`. Lo que Free Edition no permite (multi-workspace, Azure, GPU, Lakehouse Federation, etc.) se diseña, se diagrama y se documenta igual.
 
 **Hilo conductor:** una única pregunta de negocio desde la clase 1 hasta la 15:
 
@@ -54,14 +56,14 @@ El código de la solución vive fuera de las carpetas de clase (`src/`, `resourc
 | 5 | Gobierno + Ing. | Calidad de datos y pipelines declarativos | Lakeflow Declarative Pipelines (ex-DLT), expectations, cuarentena, Lakehouse Monitoring, SLAs de frescura | Pipeline Bronze→Silver con expectations y cuarentena; datos con fallas inyectadas | H3 |
 | 6 | Ingeniería | Modelado Silver: de reporte a tabla analítica | Delta `MERGE`, time travel, liquid clustering, dimensiones, SQL vs. PySpark, Photon | Pivote long→wide, dimensión CIIU, "qué vio el modelo el día X" | H3 ✔ |
 | 7 | Ingeniería | Sumar fuentes y construir features (Gold) | Feature engineering para series temporales; Feature Store en UC; Lakehouse Federation; fuentes externas típicas del sector | Gold `features_demanda_diaria` con festivos e histórico ampliado; ADR-002 | H4 |
-| 8 | Desarrollo | Código, configuración y datos separados | Git folders, ramas, PR, tests, ruff, paquetes Python, notebooks delgados, Databricks Assistant con criterio | Refactor a `src/`, pytest, primer PR con revisión cruzada | H4 ✔ |
+| 8 | Desarrollo | Código, configuración y datos separados | Git folders, ramas, PR, tests, ruff, paquetes Python, notebooks delgados, Databricks Assistant con criterio | Refactor a `src/`, pytest, primer PR con CI como revisor | H4 ✔ |
 | 9 | MLOps | Experimentación con MLflow | MLflow 3: experimentos, tracking, evaluación, comparación; baselines honestos; errores típicos (leakage) | Baseline estacional + modelo global LightGBM; métricas por segmento | H5 |
 | 10 | MLOps | Registro, versiones y entrenamiento reproducible | Model Registry en UC, alias champion/challenger, firmas, lineage modelo↔datos; "deploy code, not models" | `train.py` parametrizado, registro en UC, promoción por alias | H5 |
 | 11 | MLOps | Inferencia batch, Serving y Apps | Cuándo batch, cuándo endpoint, cuándo app; Model Serving, AI Gateway, Databricks Apps, Genie y AI/BI | Job de inferencia batch a Gold; endpoint CPU; app observado vs. estimado | H5 ✔ |
 | 12 | Operación | Orquestación con Lakeflow Jobs | DAGs, dependencias, reintentos, alertas, parámetros, triggers por archivo; integración con ADF/Airflow | Job multi-tarea ingesta→features→inferencia con notificaciones | H6 |
 | 13 | Operación | Asset Bundles y ambientes | Declarative Automation Bundles: targets, variables, service principals; DEV/QA/PROD en Azure Databricks | `databricks.yml` con 3 targets, deploy a `qa` desde CLI | H6 |
 | 14 | Operación | CI/CD y promoción entre ambientes | GitHub Actions y Azure DevOps; pruebas de integración; approvals; promoción de código y de modelos | Pipeline PR→tests→dev; tag→qa→aprobación→prod (`azure-pipelines.yml` de referencia) | H6 |
-| 15 | Operación | Monitoreo, drift, reentrenamiento y cierre | Monitoreo de datos y de modelo, drift, políticas de reentrenamiento, runbook, costos, SLOs; demo final | Monitor de drift observado vs. pronóstico; runbook; presentación por equipo | H6 ✔ |
+| 15 | Operación | Monitoreo, drift, reentrenamiento y cierre | Monitoreo de datos y de modelo, drift, políticas de reentrenamiento, runbook, costos, SLOs; demo final | Monitor de drift observado vs. pronóstico; runbook; pipeline completo en verde de punta a punta | H6 ✔ |
 
 Hitos (según el programa del curso): H1 pregunta analítica · H2 arquitectura y fuentes · H3 gobierno, permisos y calidad · H4 pipeline y Gold · H5 modelo, experimento y despliegue · H6 operación, CI/CD y consumo.
 
@@ -77,13 +79,13 @@ Hitos (según el programa del curso): H1 pregunta analítica · H2 arquitectura 
 
 ### Clase 2 — Arquitectura Medallion y patrones analíticos
 - **Teoría:** Bronze/Silver/Gold con contratos (esquema, dueño, frescura); Bronze inmutable con metadatos de ingesta; patrones de solución (batch, streaming, ML, GenAI) y cuándo usar cada uno; anti-patrones frecuentes en equipos que migran notebooks.
-- **Práctica:** diseñar en equipo la arquitectura del caso (tablas por capa, llaves, granularidad, dueños) y escribirla en `docs/architecture.md`; ADR-001 "granularidad y horizonte".
+- **Práctica:** diseñar la arquitectura del caso (tablas por capa, llaves, granularidad, dueños) y escribirla en `docs/architecture.md`; ADR-001 "granularidad y horizonte".
 - **Sector:** EDP E-REDES (operador de distribución de Portugal): ~200.000 series de carga pronosticadas a diario sobre Databricks; qué de ese patrón aplica a 355 series de XM y qué no.
 - **Entregable:** `docs/architecture.md` + ADR-001. Hito 1 cerrado.
 
 ### Clase 3 — Unity Catalog: gobierno, seguridad y acceso
 - **Teoría:** metastore → catálogo → esquema → objeto; volúmenes; grants a grupos; row filters y column masks; tags y clasificación; linaje y auditoría; secretos (secret scopes, Key Vault-backed en Azure); Delta Sharing y Clean Rooms para compartir con otros agentes.
-- **Práctica:** crear `dev`, `qa`, `prod`; grupos por equipo; grants mínimos; volumen `raw`; un usuario sin permiso rompe un job y se diagnostica.
+- **Práctica:** crear `dev`, `qa`, `prod`; grupos de rol (ingeniería, ciencia de datos, negocio); grants mínimos; volumen `raw`; un usuario sin permiso rompe un job y se diagnostica.
 - **Sector:** confidencialidad de la información por agente y comercializador; trazabilidad exigible por el regulador (CREG) y auditorías; el modelo de transparencia de ENTSO-E como referencia de datos abiertos de mercado.
 - **Entregable:** catálogos, grupos y grants documentados en `docs/governance.md`.
 
@@ -113,7 +115,7 @@ Hitos (según el programa del curso): H1 pregunta analítica · H2 arquitectura 
 
 ### Clase 8 — Código, configuración y datos separados
 - **Teoría:** Git folders y repositorios; estrategia de ramas y PR; notebooks delgados + paquete Python; tests unitarios e integración; ruff y pre-commit; configuración por ambiente sin secretos; uso de Databricks Assistant y asistentes de código con verificación.
-- **Práctica:** mover lógica a `src/xm_demanda/`; escribir tests con pytest; abrir el primer PR y revisarlo cruzado entre equipos; un PR que rompe un test.
+- **Práctica:** mover lógica a `src/xm_demanda/`; escribir tests con pytest; abrir el primer PR y dejar que CI lo revise; un PR que rompe un test.
 - **Sector:** reproducibilidad como requisito ante auditoría regulatoria: poder reconstruir hoy el pronóstico que se publicó hace seis meses.
 - **Entregable:** paquete `xm_demanda` con tests pasando en CI. Hito 4 cerrado.
 
@@ -151,13 +153,13 @@ Hitos (según el programa del curso): H1 pregunta analítica · H2 arquitectura 
 - **Teoría:** pipelines de CI (lint, tests, validate) y CD (deploy por ambiente con approvals); GitHub Actions y Azure DevOps lado a lado; pruebas de integración en `dev`; promoción de código y de modelos; secretos en CI.
 - **Práctica:** pipeline PR→tests→deploy dev; tag→deploy qa→aprobación→prod; un merge que se salta CI. `azure-pipelines.yml` equivalente como referencia.
 - **Sector:** auditabilidad del despliegue: quién aprobó, qué versión, cuándo.
-- **Entregable:** CI/CD operando sobre el repo del equipo.
+- **Entregable:** CI/CD operando sobre el propio fork.
 
 ### Clase 15 — Monitoreo, drift, reentrenamiento y cierre
 - **Teoría:** monitoreo de datos (frescura, volumen, distribución) y de modelo (error observado vs. pronóstico, drift); políticas de reentrenamiento (calendario, por drift, por evento); runbook y dueños; costos y SLOs; tablero AI/BI y espacio Genie para negocio.
-- **Práctica:** monitor de drift sobre `pronostico_demanda` vs. real; política de reentrenamiento en el job; runbook; demo final por equipo; retro y backlog post-curso.
+- **Práctica:** monitor de drift sobre `pronostico_demanda` vs. real; política de reentrenamiento en el job; runbook; ejecución completa del pipeline en el propio fork; demo de la solución de referencia; backlog post-curso.
 - **Sector:** cambios estructurales que degradan un modelo de demanda: El Niño, autogeneración solar, nuevas cargas industriales, cambios regulatorios; cómo se detectan antes de que el negocio los note.
-- **Entregable:** solución completa operando; presentación por equipo. Hito 6 cerrado.
+- **Entregable:** solución completa operando en el propio fork. Hito 6 cerrado.
 
 ---
 
@@ -191,8 +193,8 @@ Hitos (según el programa del curso): H1 pregunta analítica · H2 arquitectura 
 ## Requisitos previos
 
 - Python intermedio y SQL. PySpark básico es deseable, no obligatorio (se cubre en las clases 4–7).
-- Cuenta en GitHub y en Databricks Free Edition.
-
+- Cuenta en GitHub y en Databricks Free Edition (se envían instrucciones antes de la clase 1).
+- Encuesta de nivel previa (5 minutos) para ajustar el peso SQL/PySpark de los laboratorios.
 
 ## Uso de los datos
 

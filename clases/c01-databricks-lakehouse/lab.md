@@ -1,6 +1,6 @@
 # Lab 1 — Primer activo gobernado en el Lakehouse
 
-**Duración:** 70 min · **Modalidad:** individual dentro del equipo (cada persona deja su propia tabla; el equipo hace un solo PR)
+**Duración:** 70 min · **Modalidad:** individual, en tu propio fork
 
 ## Objetivo
 
@@ -23,7 +23,7 @@ Inicia sesión en el workspace compartido. Ve a **Catalog** y confirma que ves e
 ### 2. Fork y Git folder
 1. En GitHub, **Fork** de `Databricks-to-XM` a tu cuenta.
 2. En Databricks: **Workspace → tu carpeta de usuario → Create → Git folder**. URL: la de tu fork. Proveedor: GitHub.
-3. Abre el Git folder y crea la rama `feature/<equipo>-c01-primera-tabla` (botón de rama arriba a la izquierda → **Create branch**).
+3. Abre el Git folder y crea la rama `feature/c01-primera-tabla` (botón de rama arriba a la izquierda → **Create branch**).
 
 ### 3. Esquema y volumen
 En un notebook nuevo (o en el editor SQL) ejecuta, reemplazando `<usuario>` por tu nombre corto sin puntos ni tildes:
@@ -62,13 +62,19 @@ SELECT count(*) FROM workspace.c01_<usuario>.demanda_raw VERSION AS OF 0;
 Deben aparecer al menos dos versiones.
 
 ### 8. Commit y push
-En el Git folder: botón de Git → revisa los cambios → mensaje `feat(c01): primera tabla Delta de demanda` → **Commit & Push**. Verifica el commit en tu fork en GitHub. Un integrante del equipo abre el PR hacia `main` de su fork; otro equipo lo revisa (comentario mínimo: "¿el notebook tiene algo hard-codeado?").
+En el Git folder: botón de Git → revisa los cambios → mensaje `feat(c01): primera tabla Delta de demanda` → **Commit & Push**. Verifica el commit en tu fork en GitHub. Abre un PR de `feature/c01-primera-tabla` hacia `main` de tu fork: CI corre lint y tests. Si está en verde, haz merge.
 
 ## Criterios de aceptación
 
+La última celda del notebook, `verificar()`, comprueba los dos primeros automáticamente.
+
 - [ ] `workspace.c01_<usuario>.demanda_raw` existe, tiene 145.408 filas e incluye `_ingested_at` y `_source_file`
 - [ ] `DESCRIBE HISTORY` muestra al menos 2 versiones
-- [ ] El commit es visible en tu fork y el PR del equipo está abierto
+- [ ] El commit es visible en tu fork y el PR está en verde
+
+## Comparar con la solución de referencia
+
+Al cierre de la clase se libera el tag `s01`. Ver `docs/autoevaluacion.md` para el `git diff`.
 
 ## Extensión opcional
 

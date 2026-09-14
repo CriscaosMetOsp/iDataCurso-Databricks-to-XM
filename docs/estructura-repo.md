@@ -15,7 +15,7 @@ Databricks-to-XM/
 ├── ci/azure-pipelines.yml     Equivalente en Azure DevOps (referencia)
 ├── data/raw                   Dataset del caso
 ├── data/reference             Tablas de referencia (festivos, CIIU)
-├── docs/                      Arquitectura, gobierno, ADRs, runbook, rúbrica
+├── docs/                      Arquitectura, gobierno, ADRs, runbook, autoevaluación
 └── clases/c01 … c15/          Material de cada clase: slides, lab, notebooks, lecturas
 ```
 

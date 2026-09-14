@@ -2,7 +2,7 @@
 
 - **Estado:** propuesta | aceptada | reemplazada
 - **Fecha:**
-- **Equipo:**
+- **Autor:**
 
 ## Contexto
 

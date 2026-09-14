@@ -104,6 +104,31 @@ spark.sql(f"SELECT count(*) AS filas_version_0 FROM {tabla} VERSION AS OF 0").di
 # COMMAND ----------
 
 # MAGIC %md
+# MAGIC ## Verificación automática
+# MAGIC
+# MAGIC Comprueba los criterios de aceptación del lab. Corre esta celda cuando creas que terminaste.
+
+# COMMAND ----------
+
+
+def verificar():
+    checks = []
+    cols = set(spark.table(tabla).columns)
+    checks.append(("Tabla con 145.408 filas", spark.table(tabla).count() == 145_408))
+    checks.append(("Columnas _ingested_at y _source_file", {"_ingested_at", "_source_file"} <= cols))
+    checks.append(("355 series activas", spark.table(tabla).select(*llave).distinct().count() == 355))
+    versiones = spark.sql(f"DESCRIBE HISTORY {tabla}").count()
+    checks.append(("Al menos 2 versiones en el historial", versiones >= 2))
+    for nombre, ok in checks:
+        print(("OK   " if ok else "FALTA") + "  " + nombre)
+    print("\nListo: commit y push." if all(ok for _, ok in checks) else "\nRevisa los puntos marcados FALTA.")
+
+
+verificar()
+
+# COMMAND ----------
+
+# MAGIC %md
 # MAGIC ## Extensión opcional
 # MAGIC
 # MAGIC ¿Cuántas series tienen datos los 206 días? ¿Cuáles no y cuántos días les faltan?
